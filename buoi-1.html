@@ -41,7 +41,7 @@
                 <div class="font-normal text-lg text-gray-700 pl-4 border-l border-gray-300" id="sessionTitle">Đang tải...</div>
             </div>
             <div class="flex items-center gap-3 text-sm font-medium text-gray-600 bg-gray-100 px-4 py-1.5 rounded border border-gray-200">
-                <span id="courseLabel" class="text-blue-600 border-r border-gray-300 pr-3">Khóa: --</span>
+                <span id="studentLabel" class="text-[#1a73e8] border-r border-gray-300 pr-3 font-medium">👤 Chưa định danh</span>
                 <span id="timeRemaining">Tiến độ: 0%</span>
             </div>
         </div>
@@ -88,9 +88,12 @@
             const savedState = localStorage.getItem(STORAGE_KEY);
             if(savedState) currentStepIndex = parseInt(savedState) || 0;
             
-            // Hiển thị tên khóa học cho học viên biết
-            const cName = localStorage.getItem('kv_course_name') || 'Chưa định danh';
-            document.getElementById('courseLabel').innerText = "Khóa: " + cName;
+            // Hiển thị Tên + Phòng ban của học viên
+            const profileRaw = localStorage.getItem('kv_trainer_profile');
+            if(profileRaw) {
+                const profile = JSON.parse(profileRaw);
+                document.getElementById('studentLabel').innerText = `👤 ${profile.name} - ${profile.dept}`;
+            }
 
             loadSessionData();
         });
@@ -188,16 +191,19 @@
             const files = event.target.files;
             if (!files || files.length === 0) return;
 
-            const apiUrl = localStorage.getItem('kv_api_url');
-            const courseName = localStorage.getItem('kv_course_name') || 'Chưa đặt tên Khóa';
+            // ĐỌC API VÀ TÊN KHÓA TỪ FILE CONFIG (KHÔNG DÙNG LOCALSTORAGE NỮA)
+            const apiUrl = APP_CONFIG.API_URL;
+            const courseName = APP_CONFIG.COURSE_NAME;
             
-            if (!apiUrl) {
-                alert("Lỗi: Giảng viên chưa cấu hình API (Ctrl+Shift+A)."); return;
+            if (!apiUrl || apiUrl === "") {
+                alert("Lỗi: Admin chưa cấu hình Link API trong file codelab-data.js!"); return;
             }
 
             const profileRaw = localStorage.getItem('kv_trainer_profile');
             if (!profileRaw) {
-                alert("Lỗi: Bạn chưa định danh Họ tên. Hãy quay lại Trang chủ!"); return;
+                alert("Lỗi: Bạn chưa định danh Họ tên. Hãy quay lại Trang chủ!"); 
+                window.location.href = 'index.html';
+                return;
             }
             const profile = JSON.parse(profileRaw);
 
@@ -220,7 +226,7 @@
                     reader.onload = e => {
                         resolve({
                             mimeType: files[i].type,
-                            base64Data: e.target.result.split(',')[1] // Cắt phần dataURL
+                            base64Data: e.target.result.split(',')[1]
                         });
                     };
                     reader.onerror = e => reject(e);
@@ -235,7 +241,7 @@
                     courseName: courseName,
                     session: document.getElementById('sessionTitle').innerText,
                     exerciseTitle: exerciseTitle,
-                    images: imagesData // Gửi mảng ảnh
+                    images: imagesData
                 };
 
                 return fetch(apiUrl, {
