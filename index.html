@@ -4,57 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trainer OS - Cổng Đào Tạo KiotViet</title>
+    <!-- Thêm Font Roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Roboto', sans-serif; }
+    </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col relative">
 
     <!-- MODAL ĐỊNH DANH HỌC VIÊN -->
     <div id="authModal" class="fixed inset-0 bg-gray-900 bg-opacity-80 z-[100] flex items-center justify-center hidden">
-        <div class="bg-white rounded-xl shadow-2xl p-8 max-w-md w-full mx-4">
+        <div class="bg-white rounded-xl shadow-2xl p-8 max-w-md w-full mx-4 relative">
+            <!-- Nút tắt (X) -->
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+
             <h2 class="text-2xl font-bold text-gray-800 mb-2">Đăng ký ca Thực hành</h2>
-            <p class="text-gray-500 mb-6 text-sm">Vui lòng nhập thông tin để hệ thống ghi nhận kết quả bài tập của bạn.</p>
+            <p class="text-gray-500 mb-6 text-sm">Vui lòng nhập đúng thông tin để hệ thống ghi nhận kết quả cho bạn.</p>
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Họ và tên học viên *</label>
-                    <input type="text" id="inpName" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500" placeholder="VD: Nguyễn Văn A">
+                    <input type="text" id="inpName" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-[#1a73e8] focus:border-[#1a73e8] outline-none transition" placeholder="VD: Nguyễn Văn A">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Phòng ban / Cửa hàng *</label>
-                    <input type="text" id="inpDept" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500" placeholder="VD: Cửa hàng Thái Hà">
+                    <input type="text" id="inpDept" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-[#1a73e8] focus:border-[#1a73e8] outline-none transition" placeholder="VD: Cửa hàng Thái Hà">
                 </div>
-                <button onclick="saveProfile()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition mt-4">
-                    Bắt đầu thực hành
+                <button onclick="saveProfile()" class="w-full bg-[#1a73e8] hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-lg transition mt-4 shadow-sm">
+                    Lưu thông tin & Bắt đầu
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Header -->
+    <!-- HEADER -->
     <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-md">T</div>
-                <h1 class="text-2xl font-bold text-gray-900">Trainer OS</h1>
+                <div class="w-10 h-10 bg-[#1a73e8] rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-sm">T</div>
+                <h1 class="text-2xl font-bold text-gray-900 hidden sm:block">Trainer OS</h1>
             </div>
-            <div class="text-sm font-medium text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full">
-                Ngành hàng: Bán lẻ
+            
+            <div class="flex items-center gap-3">
+                <!-- NÚT GỌI POPUP ĐỊNH DANH (THÔNG MINH) -->
+                <button id="btnIdentity" onclick="openAuthModal()" class="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full border transition shadow-sm">
+                    👤 Đang kiểm tra...
+                </button>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- MAIN CONTENT -->
     <main class="flex-1 max-w-6xl mx-auto px-4 py-10 w-full">
         <!-- Banner Tổng quan -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-10 relative overflow-hidden">
             <div class="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full -mr-20 -mt-20 opacity-50"></div>
             <div class="relative z-10">
-                <h2 class="text-3xl font-bold text-blue-800 mb-4">Chào mừng đến với Khóa Thực Hành KiotViet! 🚀</h2>
-                <p class="text-gray-600 mb-6 max-w-3xl leading-relaxed text-lg">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Chào mừng đến với Khóa Thực Hành KiotViet! 🚀</h2>
+                <p class="text-gray-600 mb-6 max-w-3xl leading-relaxed text-[16px]">
                     Hệ thống bài tập Codelabs được thiết kế sát với thực tế vận hành của cửa hàng Bán lẻ. 
                     Mục tiêu giúp bạn nắm vững thao tác phần mềm từ cơ bản đến nâng cao sau khi học xong lý thuyết.
                 </p>
                 <div class="flex flex-wrap gap-4 text-sm">
-                    <span class="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-2 rounded-md font-medium border border-blue-100">
+                    <span class="flex items-center gap-2 bg-blue-50 text-[#1a73e8] px-3 py-2 rounded-md font-medium border border-blue-100">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Tổng thời lượng: 3 Buổi
                     </span>
@@ -67,51 +81,101 @@
         </div>
 
         <!-- Khối Quy trình & Lộ trình -->
-        <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+        <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
             <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
             Lộ trình thực hành
         </h3>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Buổi 1 -->
-            <a href="buoi-1.html" class="group bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg hover:border-blue-400 transition cursor-pointer flex flex-col h-full saas-card">
-                <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center font-bold text-xl mb-4 group-hover:scale-110 transition-transform">01</div>
-                <h4 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition">Tổng quan KiotViet</h4>
-                <p class="text-gray-500 text-sm mb-6 flex-1">Làm quen giao diện, đăng ký gian hàng, tạo mới hàng hóa, nhập/bán hàng cơ bản và xem báo cáo tổng quan.</p>
-                <div class="text-blue-600 font-semibold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+            <a href="buoi-1.html" class="group bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md hover:border-blue-400 transition cursor-pointer flex flex-col h-full">
+                <div class="w-12 h-12 bg-blue-50 text-[#1a73e8] rounded-full flex items-center justify-center font-bold text-xl mb-4 group-hover:scale-110 transition-transform">01</div>
+                <h4 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-[#1a73e8] transition">Tổng quan KiotViet</h4>
+                <p class="text-gray-500 text-[15px] mb-6 flex-1">Làm quen giao diện, đăng ký gian hàng, tạo mới hàng hóa, nhập/bán hàng cơ bản và xem báo cáo tổng quan.</p>
+                <div class="text-[#1a73e8] font-medium text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
                     Bắt đầu thực hành <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </div>
             </a>
 
             <!-- Buổi 2 -->
-            <a href="buoi-2.html" class="group bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg hover:blue-400 transition cursor-pointer flex flex-col h-full saas-card">
-                <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center font-bold text-xl mb-4 group-hover:scale-110 transition-transform">02</div>
-                <h4 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-indigo-600 transition">Nâng cao Bán hàng & Hàng hóa</h4>
-                <p class="text-gray-500 text-sm mb-6 flex-1">Xử lý trả hàng, công nợ, bảng giá công thức, giá vốn trung bình, Sổ quỹ và Import/Export dữ liệu Excel.</p>
-                <div class="text-indigo-600 font-semibold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+            <a href="buoi-2.html" class="group bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md hover:border-indigo-400 transition cursor-pointer flex flex-col h-full">
+                <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center font-bold text-xl mb-4 group-hover:scale-110 transition-transform">02</div>
+                <h4 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-indigo-600 transition">Nâng cao Bán hàng</h4>
+                <p class="text-gray-500 text-[15px] mb-6 flex-1">Xử lý trả hàng, công nợ, bảng giá công thức, giá vốn trung bình, Sổ quỹ và Import/Export dữ liệu Excel.</p>
+                <div class="text-indigo-600 font-medium text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
                     Bắt đầu thực hành <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </div>
             </a>
 
             <!-- Buổi 3 -->
-            <a href="buoi-3.html" class="group bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg hover:border-purple-400 transition cursor-pointer flex flex-col h-full saas-card">
-                <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center font-bold text-xl mb-4 group-hover:scale-110 transition-transform">03</div>
-                <h4 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-purple-600 transition">Mobile App & Phần cứng</h4>
-                <p class="text-gray-500 text-sm mb-6 flex-1">Quy trình bán hàng trên điện thoại (App Mobile) và cài đặt Driver máy in hóa đơn, máy in tem, ngăn kéo đựng tiền.</p>
-                <div class="text-purple-600 font-semibold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+            <a href="buoi-3.html" class="group bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md hover:border-purple-400 transition cursor-pointer flex flex-col h-full">
+                <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center font-bold text-xl mb-4 group-hover:scale-110 transition-transform">03</div>
+                <h4 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-purple-600 transition">Mobile App & Cấu hình</h4>
+                <p class="text-gray-500 text-[15px] mb-6 flex-1">Quy trình bán hàng trên điện thoại (App Mobile) và cài đặt Driver máy in hóa đơn, máy in tem, ngăn kéo đựng tiền.</p>
+                <div class="text-purple-600 font-medium text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
                     Bắt đầu thực hành <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </div>
             </a>
         </div>
     </main>
+
+    <!-- SCRIPT ĐIỀU KHIỂN LOGIC ĐỊNH DANH -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Kiểm tra Profile học viên
-            const profile = localStorage.getItem('kv_trainer_profile');
-            if(!profile) {
-                document.getElementById('authModal').classList.remove('hidden');
+            renderIdentity(); // Gọi hàm vẽ nút lên màn hình
+            
+            // Nếu lần đầu vào chưa có data, tự động mở Popup
+            const profileRaw = localStorage.getItem('kv_trainer_profile');
+            if(!profileRaw) {
+                openAuthModal();
             }
+        });
 
+        // Hàm kiểm tra và vẽ lại Nút Góc Phải
+        function renderIdentity() {
+            const btn = document.getElementById('btnIdentity');
+            const profileRaw = localStorage.getItem('kv_trainer_profile');
+            
+            if(profileRaw) {
+                // TRẠNG THÁI: ĐÃ CÓ TÊN (NÚT XANH)
+                const profile = JSON.parse(profileRaw);
+                btn.innerHTML = `👤 ${profile.name} - ${profile.dept} <span class="text-xs font-normal opacity-70 underline ml-1">(Sửa)</span>`;
+                btn.className = "flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full border transition shadow-sm bg-blue-50 text-[#1a73e8] border-blue-200 hover:bg-blue-100 cursor-pointer";
+                
+                // Điền sẵn tên vào Form nhỡ họ bấm sửa thì có sẵn chữ để sửa
+                document.getElementById('inpName').value = profile.name;
+                document.getElementById('inpDept').value = profile.dept;
+            } else {
+                // TRẠNG THÁI: CHƯA CÓ TÊN (NÚT ĐỎ - NHẤP NHÁY)
+                btn.innerHTML = `👤 Chưa định danh (Bấm để nhập)`;
+                btn.className = "flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full border transition shadow-sm bg-red-50 text-red-600 border-red-200 hover:bg-red-100 cursor-pointer animate-pulse";
+            }
+        }
+
+        function openAuthModal() {
+            document.getElementById('authModal').classList.remove('hidden');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.add('hidden');
+        }
+
+        function saveProfile() {
+            const name = document.getElementById('inpName').value.trim();
+            const dept = document.getElementById('inpDept').value.trim();
+            
+            if(!name || !dept) {
+                alert("Vui lòng điền đầy đủ Họ tên và Phòng ban để hệ thống ghi nhận điểm!");
+                return;
+            }
+            
+            // Lưu vào máy tính người dùng
+            localStorage.setItem('kv_trainer_profile', JSON.stringify({ name: name, dept: dept }));
+            
+            // Tắt Modal và Vẽ lại Nút Góc phải
+            closeAuthModal();
+            renderIdentity();
+        }
     </script>
 </body>
 </html>
