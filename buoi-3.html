@@ -495,14 +495,17 @@
         }
 
         // ==========================================
-        // TÍNH NĂNG XUẤT FILE PDF (BẢN CHUẨN NATIVE)
+        // TÍNH NĂNG XUẤT FILE PDF (ĐÃ FIX LỖI ẢNH)
         // ==========================================
         function generatePDF() {
             const pdfContent = document.getElementById('pdf-content');
+            const pdfLoading = document.getElementById('pdfLoading');
             const profile = JSON.parse(localStorage.getItem('kv_trainer_profile'));
             const sessionName = document.getElementById('sessionTitle').innerText;
 
-            // Xây dựng khung HTML 
+            // 1. Hiện chữ Đang tải
+            pdfLoading.classList.remove('hidden');
+
             let reportHtml = `<div style="font-family: Arial, sans-serif; color: #333; max-width: 800px; margin: 0 auto;">`;
             reportHtml += `<h1 style="font-size: 24px; font-weight: bold; border-bottom: 2px solid #1a73e8; padding-bottom: 10px; margin-bottom: 20px;">Báo cáo bài tập - ${sessionName}</h1>`;
             reportHtml += `<div style="background: #f8f9fa; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 30px;">
@@ -510,7 +513,7 @@
                             <p style="margin: 0; font-size: 16px;"><strong>Khóa học:</strong> ${APP_CONFIG.COURSE_NAME}</p>
                            </div>`;
 
-            // Lặp qua tất cả bài làm
+            // 2. Render nội dung
             for(let i=0; i<currentExercises.length; i++) {
                 if(currentExercises[i].isGroupHeader) continue;
                 const ex = currentExercises[i];
@@ -520,21 +523,19 @@
                 reportHtml += `<h2 style="font-size: 18px; font-weight: bold; color: #1a73e8; margin-bottom: 10px;">${ex.title}</h2>`;
                 
                 if(data.text && data.text.trim() !== '') {
-                    reportHtml += `<p style="font-weight: bold; margin-bottom: 5px;">Câu trả lời tự luận:</p>`;
                     reportHtml += `<div style="background: #e8f0fe; border-left: 4px solid #1a73e8; padding: 12px; margin-bottom: 15px; white-space: pre-wrap; font-size: 14px;">${data.text}</div>`;
                 }
                 
                 if(data.uploadedUrls && data.uploadedUrls.length > 0) {
-                    reportHtml += `<p style="font-weight: bold; margin-bottom: 5px;">Ảnh minh chứng đã nộp:</p>`;
                     reportHtml += `<div style="display: flex; flex-direction: column; gap: 15px;">`;
                     data.uploadedUrls.forEach(url => {
-                        // Tách ID file từ link Google Drive để tạo link tải ảnh trực tiếp (Vượt rào lỗi hiển thị)
+                        // FIX LỖI ẢNH: Đổi link Drive sang link lh3 tĩnh của Google để chắc chắn hiển thị
                         let directUrl = url;
                         let fileIdMatch = url.match(/\/d\/(.+?)\//);
                         if(fileIdMatch && fileIdMatch[1]) {
-                            directUrl = `https://drive.google.com/uc?export=view&id=${fileIdMatch[1]}`;
+                            directUrl = `https://lh3.googleusercontent.com/d/${fileIdMatch[1]}`;
                         }
-                        reportHtml += `<div style="text-align: center;"><img src="${directUrl}" style="border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"></div>`;
+                        reportHtml += `<div style="text-align: center;"><img src="${directUrl}" style="max-width: 100%; border: 1px solid #ccc; border-radius: 4px;"></div>`;
                     });
                     reportHtml += `</div>`;
                 } else if(!data.text) {
@@ -544,18 +545,33 @@
             }
             reportHtml += `</div>`;
             
-            // Gắn vào vùng ẩn
             pdfContent.innerHTML = reportHtml;
-            
-            // Tạm thời ẩn bảng Xác nhận đi để gọi lệnh In
             document.getElementById('certificateModal').classList.add('hidden');
-            
-            // Đợi nửa giây cho HTML render xong rồi gọi lệnh In của Chrome
-            setTimeout(() => {
+
+            // 3. LOGIC CHỜ TẢI ẢNH (Pre-loader)
+            const images = pdfContent.getElementsByTagName('img');
+            let loadedImagesCount = 0;
+
+            if (images.length === 0) {
+                // Nếu không có ảnh nào, in luôn
+                pdfLoading.classList.add('hidden');
                 window.print();
-                // In xong (hoặc bấm Hủy) thì mở lại bảng Xác nhận
                 document.getElementById('certificateModal').classList.remove('hidden');
-            }, 500);
+            } else {
+                // Nếu có ảnh, bắt buộc đợi load xong 100% các tấm ảnh mới In
+                for (let img of images) {
+                    img.onload = img.onerror = function() {
+                        loadedImagesCount++;
+                        if (loadedImagesCount === images.length) {
+                            pdfLoading.classList.add('hidden');
+                            setTimeout(() => {
+                                window.print();
+                                document.getElementById('certificateModal').classList.remove('hidden');
+                            }, 500); // Thêm độ trễ xíu cho an toàn
+                        }
+                    };
+                }
+            }
         }
     </script>
 </body>
